@@ -41,10 +41,10 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="管理者id" prop="managerUserId">
+      <el-form-item label="管理者姓名" label-width="120px" prop="managerUserName">
         <el-input
-          v-model="queryParams.managerUserId"
-          placeholder="请输入管理者id"
+          v-model="queryParams.managerUserName"
+          placeholder="请输入管理者姓名"
           clearable
           @keyup.enter="handleQuery"
         />
@@ -99,9 +99,9 @@
 
     <el-table v-loading="loading" :data="projectList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="${comment}" align="center" prop="id" />
-      <el-table-column label="项目名称" align="center" prop="projectName" />
+<!--      <el-table-column label="项目id" align="center" prop="id" />-->
       <el-table-column label="唯一编码" align="center" prop="code" />
+      <el-table-column label="项目名称" align="center" prop="projectName" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="开始日期" align="center" prop="startDate" width="180">
         <template #default="scope">
@@ -114,7 +114,7 @@
         </template>
       </el-table-column>
       <el-table-column label="排序" align="center" prop="sort" />
-      <el-table-column label="管理者id" align="center" prop="managerUserId" />
+      <el-table-column label="管理者" align="center" prop="managerName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['systemManage:project:edit']">修改</el-button>
@@ -162,8 +162,13 @@
         <el-form-item label="排序" prop="sort">
           <el-input v-model="form.sort" placeholder="请输入排序" />
         </el-form-item>
-        <el-form-item label="管理者id" prop="managerUserId">
-          <el-input v-model="form.managerUserId" placeholder="请输入管理者id" />
+<!--        <el-form-item label="管理者id" prop="managerUserId">-->
+<!--          <el-input v-model="form.managerUserId" placeholder="请输入管理者id" />-->
+<!--        </el-form-item>-->
+        <el-form-item label="管理者" prop="managerUserId">
+          <el-select v-model="form.managerUserId" placeholder="请输入管理者id" >
+            <el-option v-for="item in users" :label="item.nickName" :value="item.userId"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -178,6 +183,7 @@
 
 <script setup name="Project">
 import { listProject, getProject, delProject, addProject, updateProject } from "@/api/systemManage/project";
+import {allUsers} from '@/api/system/user.js'
 
 const { proxy } = getCurrentInstance();
 
@@ -202,12 +208,21 @@ const data = reactive({
     endDate: null,
     sort: null,
     managerUserId: null,
+    managerUserName: null
   },
   rules: {
   }
 });
 
+const users = ref([])
+
 const { queryParams, form, rules } = toRefs(data);
+
+function fetchUser(){
+  allUsers().then(response => {
+    users.value = response.data;
+  })
+}
 
 /** 查询项目列表 */
 function getList() {
@@ -266,6 +281,7 @@ function handleSelectionChange(selection) {
 /** 新增按钮操作 */
 function handleAdd() {
   reset();
+  fetchUser()
   open.value = true;
   title.value = "添加项目";
 }
@@ -273,6 +289,7 @@ function handleAdd() {
 /** 修改按钮操作 */
 function handleUpdate(row) {
   reset();
+  fetchUser()
   const _id = row.id || ids.value
   getProject(_id).then(response => {
     form.value = response.data;

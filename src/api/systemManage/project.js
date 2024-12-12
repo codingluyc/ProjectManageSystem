@@ -9,6 +9,15 @@ export function listProject(query) {
   })
 }
 
+// 查询项目列表
+export function allProject(query) {
+  return request({
+    url: '/systemManage/project/allProject',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询项目详细
 export function getProject(id) {
   return request({

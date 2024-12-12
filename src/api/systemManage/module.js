@@ -9,6 +9,15 @@ export function listModule(query) {
   })
 }
 
+// 查询模块列表
+export function allModule(query) {
+  return request({
+    url: '/systemManage/module/allModule',
+    method: 'get',
+    params: query
+  })
+}
+
 // 查询模块详细
 export function getModule(id) {
   return request({

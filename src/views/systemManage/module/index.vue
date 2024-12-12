@@ -1,13 +1,15 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="项目id" prop="projectId">
-        <el-input
-          v-model="queryParams.projectId"
-          placeholder="请输入项目id"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+      <el-form-item label="项目" prop="projectId" >
+        <el-select
+        v-model="queryParams.projectId"
+        placeholder="请选择项目"
+        clearable
+        style="width: 150px"
+        >
+          <el-option v-for="item in projects" :value="item.id" :label="item.name"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="唯一编码" prop="code">
         <el-input
@@ -25,14 +27,14 @@
           @keyup.enter="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="排序" prop="sort">
-        <el-input
-          v-model="queryParams.sort"
-          placeholder="请输入排序"
-          clearable
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
+<!--      <el-form-item label="排序" prop="sort">-->
+<!--        <el-input-->
+<!--          v-model="queryParams.sort"-->
+<!--          placeholder="请输入排序"-->
+<!--          clearable-->
+<!--          @keyup.enter="handleQuery"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
         <el-button icon="Refresh" @click="resetQuery">重置</el-button>
@@ -83,10 +85,10 @@
 
     <el-table v-loading="loading" :data="moduleList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="${comment}" align="center" prop="id" />
-      <el-table-column label="项目id" align="center" prop="projectId" />
+<!--      <el-table-column label="${comment}" align="center" prop="id" />-->
       <el-table-column label="唯一编码" align="center" prop="code" />
       <el-table-column label="模块名称" align="center" prop="name" />
+      <el-table-column label="项目名称" align="center" prop="projectName" />
       <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="排序" align="center" prop="sort" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -108,8 +110,16 @@
     <!-- 添加或修改模块对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
       <el-form ref="moduleRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="项目id" prop="projectId">
-          <el-input v-model="form.projectId" placeholder="请输入项目id" />
+        <el-form-item label="项目" prop="projectId">
+<!--          <el-input v-model="form.projectId" placeholder="请输入项目id" />-->
+          <el-select
+              v-model="form.projectId"
+              placeholder="请选择项目"
+              clearable
+              style="width: 150px"
+          >
+            <el-option v-for="item in projects" :value="item.id" :label="item.name"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="唯一编码" prop="code">
           <el-input v-model="form.code" placeholder="请输入唯一编码" />
@@ -135,8 +145,8 @@
 </template>
 
 <script setup name="Module">
-import { listModule, getModule, delModule, addModule, updateModule } from "@/api/systemManage/module";
-
+import {listModule, getModule, delModule, addModule, updateModule, allModule} from "@/api/systemManage/module";
+import {allProject} from "@/api/systemManage/project";
 const { proxy } = getCurrentInstance();
 
 const moduleList = ref([]);
@@ -148,7 +158,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref("");
-
+const projects = ref([]);
 const data = reactive({
   form: {},
   queryParams: {
@@ -173,6 +183,17 @@ function getList() {
     total.value = response.total;
     loading.value = false;
   });
+}
+
+function fetchProjects(){
+  allProject().then(response => {
+    projects.value = response.data;
+  })
+}
+function fetchModules(){
+  allModule().then(response => {
+    modules.value = response.data;
+  })
 }
 
 // 取消按钮
@@ -208,6 +229,7 @@ function handleQuery() {
 function resetQuery() {
   proxy.resetForm("queryRef");
   handleQuery();
+  fetchProjects();
 }
 
 // 多选框选中数据
@@ -275,4 +297,5 @@ function handleExport() {
 }
 
 getList();
+fetchProjects();
 </script>
