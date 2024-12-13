@@ -185,8 +185,9 @@
 
         <el-form-item label="模块" prop="moduleId">
           <el-select
-              v-model="form.moduleId"
+              v-model="form.moduleIds"
               placeholder="请选择项目"
+              multiple
               clearable
               style="width: 150px"
           >
@@ -224,8 +225,15 @@
               style="width: 150px">
             <el-option v-for="dict in task_state" :key="dict.value" :label="dict.label" :value="dict.value"/>
           </el-select>
-
         </el-form-item>
+
+        <el-form-item label="自动分工">
+          <el-radio-group v-model="form.auto">
+            <el-radio  :value=1>自动分工</el-radio>
+            <el-radio  :value=2>人工分工</el-radio>
+          </el-radio-group>
+        </el-form-item>
+
       </el-form>
       <template #footer>
         <div class="dialog-footer">
