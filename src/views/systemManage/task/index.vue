@@ -128,9 +128,10 @@
 
     <el-table v-loading="loading" :data="taskList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="项目" align="center" prop="projectName"/>
-      <el-table-column label="模块" align="center" prop="moduleName"/>
+      <el-table-column label="任务id" align="center" prop="id"/>
       <el-table-column label="任务名称" align="center" prop="name"/>
+      <el-table-column label="模块" align="center" prop="moduleName"/>
+      <el-table-column label="项目" align="center" prop="projectName"/>
       <el-table-column label="任务状态" align="center" prop="state">
         <template #default="scope">
           <dict-tag :options="task_state" :value="scope.row.state"/>
@@ -185,13 +186,14 @@
         <el-form-item label="模块" prop="moduleId">
           <el-select
               v-model="form.moduleId"
-              placeholder="请选择请选择项目"
+              placeholder="请选择项目"
               clearable
               style="width: 150px"
           >
             <el-option v-for="item in formModules" :value="item.id" :label="item.moduleName"></el-option>
           </el-select>
         </el-form-item>
+
         <el-form-item label="任务名称" prop="name">
           <el-input v-model="form.name" placeholder="请输入任务名称"/>
         </el-form-item>

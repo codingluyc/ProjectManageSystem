@@ -9,6 +9,14 @@ export function listTask(query) {
   })
 }
 
+// 查询任务列表
+export function allTask(query) {
+  return request({
+    url: '/systemManage/task/allTask',
+    method: 'get',
+    params: query
+  })
+}
 // 查询任务详细
 export function getTask(id) {
   return request({
