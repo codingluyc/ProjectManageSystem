@@ -24,10 +24,26 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="开发人员" prop="userId">
+      <el-form-item label="职责" prop="devType">
+        <el-select
+            v-model="queryParams.devType"
+            placeholder="请选择职责"
+            clearable
+            style="width: 150px"
+        >
+          <el-option
+              v-for="dict in dev_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="开发人员" prop="userName">
         <el-input
-          v-model="queryParams.userId"
-          placeholder="请选择开发人员"
+          v-model="queryParams.developerName"
+          placeholder="请输入开发人员姓名"
           clearable
           @keyup.enter="handleQuery"
         />
@@ -84,7 +100,11 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="项目" align="center" prop="projectName" />
       <el-table-column label="模块" align="center" prop="moduleName" />
-      <el-table-column label="职责" align="center" prop="devType" />
+      <el-table-column label="职责" align="center" prop="devType" >
+        <template #default="scope">
+          <dict-tag :options="dev_type" :value="scope.row.devType"/>
+        </template>
+      </el-table-column>
       <el-table-column label="人员" align="center" prop="developerName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
@@ -123,7 +143,7 @@
               clearable
               style="width: 150px"
           >
-            <el-option v-for="item in modules" :value="item.id" :label="item.moduleName + '_'+item.projectName"></el-option>
+            <el-option v-for="item in modules" :value="item.id" :label="item.moduleName"></el-option>
           </el-select>
         </el-form-item>
 
@@ -132,21 +152,22 @@
               v-model="form.devType"
               placeholder="请选择职责"
               clearable
-              style="width: 150px"
-          >
+              style="width: 150px">
+            <el-option
+                v-for="dict in dev_type"
+                :key="dict.value"
+                :label="dict.label"
+                :value="dict.value"
+            />
           </el-select>
         </el-form-item>
 
         <el-form-item label="开发人员" prop="userId">
-          <el-select
-              v-model="form.userId"
-              placeholder="请选择开发人员"
-              clearable
-              style="width: 150px"
-          >
-            <el-option v-for="item in users" :label="item.nickName" :value="item.userId"></el-option>
+          <el-select v-model="form.userId" placeholder="请选择开发人员" style="width: 150px">
+            <el-option v-for="item in users" :key="item.userId" :label="item.nickName" :value="item.userId"/>
           </el-select>
         </el-form-item>
+
       </el-form>
       <template #footer>
         <div class="dialog-footer">
@@ -163,6 +184,7 @@ import { listModuleDeveloper, getModuleDeveloper, delModuleDeveloper, addModuleD
 import {allProject} from "@/api/systemManage/project";
 import {allModule} from "@/api/systemManage/module";
 import {allUsers} from "@/api/system/user.js";
+import DictTag from "@/components/DictTag/index.vue";
 const { proxy } = getCurrentInstance();
 
 const moduleDeveloperList = ref([]);
@@ -186,13 +208,18 @@ const data = reactive({
     moduleId: null,
     devType: null,
     userId: null,
-    projectId:null
+    projectId:null,
+    developerName:null
   },
   rules: {
   }
 });
 
+
 const { queryParams, form, rules } = toRefs(data);
+
+
+const { dev_type } = proxy.useDict('dev_type');
 
 function fetchProjects(){
   allProject().then(response => {
@@ -200,6 +227,7 @@ function fetchProjects(){
   })
 }
 function fetchModules(){
+  queryParams.value.moduleId=null;
   allModule({projectId: queryParams.value.projectId}).then(response => {
     modules.value = response.data;
   })

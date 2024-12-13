@@ -166,7 +166,7 @@
 <!--          <el-input v-model="form.managerUserId" placeholder="请输入管理者id" />-->
 <!--        </el-form-item>-->
         <el-form-item label="管理者" prop="managerUserId">
-          <el-select v-model="form.managerUserId" placeholder="请输入管理者id" >
+          <el-select v-model="form.managerUserId" placeholder="请输入管理者" >
             <el-option v-for="item in users" :label="item.nickName" :value="item.userId"></el-option>
           </el-select>
         </el-form-item>
