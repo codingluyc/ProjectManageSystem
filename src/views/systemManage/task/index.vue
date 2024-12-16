@@ -228,11 +228,18 @@
         </el-form-item>
 
         <el-form-item label="自动分工">
-          <el-radio-group v-model="form.auto">
+          <el-radio-group v-model="form.auto" >
             <el-radio  :value=1>自动分工</el-radio>
             <el-radio  :value=2>人工分工</el-radio>
           </el-radio-group>
         </el-form-item>
+
+        <el-form-item v-if="form.auto === 1" label="分工职责">
+          <el-select v-model="form.duties" multiple clearable :min-height = "1">
+            <el-option v-for="dict in dev_type" :key="dict.value" :label="dict.label" :value="dict.value"/>
+          </el-select>
+        </el-form-item>
+
 
       </el-form>
       <template #footer>
@@ -267,7 +274,9 @@ const modules = ref([]);
 const formModules = ref([]);
 const endDateRange = ref([]);
 const data = reactive({
-  form: {},
+  form: {
+    auto: 1
+  },
   queryParams: {
     pageNum: 1,
     pageSize: 10,
@@ -280,7 +289,7 @@ const data = reactive({
     endDateBegin: null,
     endDateEnd: null
   },
-  rules: {}
+  rules: {},
 });
 const formatter = new Intl.DateTimeFormat('zh-CN', {
   year: 'numeric',
@@ -288,7 +297,10 @@ const formatter = new Intl.DateTimeFormat('zh-CN', {
   day: '2-digit'
 });
 const {queryParams, form, rules} = toRefs(data);
-const {task_state} = proxy.useDict('task_state');
+const {task_state,dev_type} = proxy.useDict('task_state','dev_type');
+
+
+
 
 function fetchProjects() {
   allProject().then(response => {
