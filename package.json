@@ -20,6 +20,7 @@
     "@vueup/vue-quill": "1.2.0",
     "@vueuse/core": "10.11.0",
     "axios": "0.28.1",
+    "dhtmlx-gantt": "^9.0.3",
     "echarts": "5.5.1",
     "element-plus": "2.7.6",
     "file-saver": "2.0.5",

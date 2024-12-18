@@ -8,7 +8,14 @@ export function listTaskDeveloper(query) {
     params: query
   })
 }
-
+// 查询任务-开发者列表
+export function allList(query) {
+  return request({
+    url: '/systemManage/taskDeveloper/allList',
+    method: 'get',
+    params: query
+  })
+}
 // 查询任务-开发者详细
 export function getTaskDeveloper(id) {
   return request({

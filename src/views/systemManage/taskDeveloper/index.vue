@@ -379,6 +379,8 @@ function handleAdd() {
 /** 修改按钮操作 */
 function handleUpdate(row) {
   reset();
+  fetchFormModules();
+  fetchTask();
   const _id = row.id || ids.value
   getTaskDeveloper(_id).then(response => {
     form.value = response.data;

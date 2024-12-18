@@ -229,7 +229,7 @@
 
         <el-form-item label="自动分工">
           <el-radio-group v-model="form.auto" >
-            <el-radio  :value=1>自动分工</el-radio>
+            <el-radio  :value=1 >自动分工</el-radio>
             <el-radio  :value=2>人工分工</el-radio>
           </el-radio-group>
         </el-form-item>
@@ -394,6 +394,7 @@ function handleSelectionChange(selection) {
 /** 新增按钮操作 */
 function handleAdd() {
   reset();
+  form.value.auto = 1;
   open.value = true;
   title.value = "添加任务";
 }
