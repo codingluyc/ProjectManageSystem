@@ -81,7 +81,7 @@
           plain
           icon="Plus"
           @click="handleAdd"
-          v-hasPermi="['systemManage:taskDeveloper:add']"
+          v-hasPermi="['scheduling:taskDeveloper:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -91,7 +91,7 @@
           icon="Edit"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['systemManage:taskDeveloper:edit']"
+          v-hasPermi="['scheduling:taskDeveloper:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -101,7 +101,7 @@
           icon="Delete"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['systemManage:taskDeveloper:remove']"
+          v-hasPermi="['scheduling:taskDeveloper:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -110,7 +110,7 @@
           plain
           icon="Download"
           @click="handleExport"
-          v-hasPermi="['systemManage:taskDeveloper:export']"
+          v-hasPermi="['scheduling:taskDeveloper:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
@@ -141,8 +141,8 @@
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['systemManage:taskDeveloper:edit']">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['systemManage:taskDeveloper:remove']">删除</el-button>
+          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['scheduling:taskDeveloper:edit']">修改</el-button>
+          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['scheduling:taskDeveloper:remove']">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -164,7 +164,7 @@
               placeholder="请选择项目"
               clearable
               style="width: 150px"
-              @change="fetchFormModules();fetchTask()"
+              @change="fetchFormModules();fetchTask();fetchUser()"
           >
             <el-option v-for="item in projects" :value="item.id" :label="item.name"></el-option>
           </el-select>
@@ -238,10 +238,10 @@
 </template>
 
 <script setup name="TaskDeveloper">
-import { listTaskDeveloper, getTaskDeveloper, delTaskDeveloper, addTaskDeveloper, updateTaskDeveloper } from "@/api/systemManage/taskDeveloper";
-import {allProject} from "@/api/systemManage/project";
-import {allModule} from "@/api/systemManage/module";
-import {allTask} from "@/api/systemManage/task.js";
+import { listTaskDeveloper, getTaskDeveloper, delTaskDeveloper, addTaskDeveloper, updateTaskDeveloper } from "@/api/scheduling/taskDeveloper";
+import {allProject} from "@/api/scheduling/project";
+import {allModule} from "@/api/scheduling/module";
+import {allTask} from "@/api/scheduling/task.js";
 import {allUsers} from "@/api/system/user.js";
 
 import DictTag from "@/components/DictTag/index.vue";
@@ -300,7 +300,8 @@ function fetchFormModules(){
   })
 }
 function fetchUser(){
-  allUsers().then(response => {
+  const _projectId = form.value.projectId;
+  allUsers({projectId:_projectId}).then(response => {
     users.value = response.data;
   })
 }

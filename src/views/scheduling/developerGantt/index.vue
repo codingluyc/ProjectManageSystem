@@ -1,9 +1,9 @@
 <script setup>
-import {allProject} from "@/api/systemManage/project";
-import {allModule} from "@/api/systemManage/module";
-import {allTask} from "@/api/systemManage/task.js";
+import {allProject} from "@/api/scheduling/project";
+import {allModule} from "@/api/scheduling/module";
+import {allTask} from "@/api/scheduling/task.js";
 import {allUsers} from "@/api/system/user.js";
-import {allList} from "@/api/systemManage/taskDeveloper";
+import {allList} from "@/api/scheduling/taskDeveloper";
 import GanttComponent from '@/components/gantt/gantt.vue';
 const { proxy } = getCurrentInstance();
 const {task_state} = proxy.useDict('task_state');
@@ -93,6 +93,7 @@ function fetchFormModules(){
   })
 }
 function fetchUser(){
+
   allUsers().then(response => {
     users.value = response.data;
   })

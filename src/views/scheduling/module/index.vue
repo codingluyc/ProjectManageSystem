@@ -48,7 +48,7 @@
           plain
           icon="Plus"
           @click="handleAdd"
-          v-hasPermi="['systemManage:module:add']"
+          v-hasPermi="['scheduling:module:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -58,7 +58,7 @@
           icon="Edit"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['systemManage:module:edit']"
+          v-hasPermi="['scheduling:module:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -68,7 +68,7 @@
           icon="Delete"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['systemManage:module:remove']"
+          v-hasPermi="['scheduling:module:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -77,7 +77,7 @@
           plain
           icon="Download"
           @click="handleExport"
-          v-hasPermi="['systemManage:module:export']"
+          v-hasPermi="['scheduling:module:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
@@ -93,8 +93,8 @@
       <el-table-column label="排序" align="center" prop="sort" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['systemManage:module:edit']">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['systemManage:module:remove']">删除</el-button>
+          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['scheduling:module:edit']">修改</el-button>
+          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['scheduling:module:remove']">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -145,8 +145,8 @@
 </template>
 
 <script setup name="Module">
-import {listModule, getModule, delModule, addModule, updateModule, allModule} from "@/api/systemManage/module";
-import {allProject} from "@/api/systemManage/project";
+import {listModule, getModule, delModule, addModule, updateModule, allModule} from "@/api/scheduling/module";
+import {allProject} from "@/api/scheduling/project";
 const { proxy } = getCurrentInstance();
 
 const moduleList = ref([]);

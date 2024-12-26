@@ -62,7 +62,7 @@
           plain
           icon="Plus"
           @click="handleAdd"
-          v-hasPermi="['systemManage:project:add']"
+          v-hasPermi="['scheduling:project:add']"
         >新增</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -72,7 +72,7 @@
           icon="Edit"
           :disabled="single"
           @click="handleUpdate"
-          v-hasPermi="['systemManage:project:edit']"
+          v-hasPermi="['scheduling:project:edit']"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -82,7 +82,7 @@
           icon="Delete"
           :disabled="multiple"
           @click="handleDelete"
-          v-hasPermi="['systemManage:project:remove']"
+          v-hasPermi="['scheduling:project:remove']"
         >删除</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -91,7 +91,7 @@
           plain
           icon="Download"
           @click="handleExport"
-          v-hasPermi="['systemManage:project:export']"
+          v-hasPermi="['scheduling:project:export']"
         >导出</el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
@@ -117,8 +117,9 @@
       <el-table-column label="管理者" align="center" prop="managerName" />
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['systemManage:project:edit']">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['systemManage:project:remove']">删除</el-button>
+          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['scheduling:project:edit']">修改</el-button>
+          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['scheduling:project:remove']">删除</el-button>
+          <el-button link type="primary" icon="View" @click="handleManageTeam(scope.row)" v-hasPermi="['scheduling:team:list']">团队</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -178,12 +179,52 @@
         </div>
       </template>
     </el-dialog>
+
+<!--    团队抽屉-->
+    <el-drawer :title="teamTitle" v-model="teamOpen" width="500px" :direction="'rtl'">
+      <el-table v-loading="loading" :data="teamUsers" >
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column label="用户id" align="center" prop="userId" />
+        <el-table-column label="用户名称" align="center" prop="userName" />
+        <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+          <template #default="scope">
+            <el-button link type="primary" icon="Delete" @click="handleDeleteTeam(scope.row)" v-hasPermi="['scheduling:team:remove']">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="openAddTeamNumbers()">添加</el-button>
+          <el-button @click="teamOpen=false">确认</el-button>
+        </div>
+      </template>
+    </el-drawer>
+
+<!--    添加团队成员-->
+    <el-dialog :title="'添加成员'"  width="500px" v-model="teamAddOpen" append-to-body>
+      <el-form ref="teamAddRef" :model="teamForm" :rules="rules" label-width="80px">
+        <el-form-item label="用户">
+          <el-select v-model="teamForm.userIds" placeholder="请选择团队成员" multiple>
+            <el-option v-for="item in usersNotInProject" :label="item.userName" :value="item.userId" :key="item.userId"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button type="primary" @click="submitTeamForm">确 定</el-button>
+          <el-button @click="teamAddOpen=false">取 消</el-button>
+        </div>
+      </template>
+    </el-dialog>
+
   </div>
 </template>
 
 <script setup name="Project">
-import { listProject, getProject, delProject, addProject, updateProject } from "@/api/systemManage/project";
+import { listProject, getProject, delProject, addProject, updateProject } from "@/api/scheduling/project";
+import { listTeam,  delTeam, addTeams, listNotInProject } from "@/api/scheduling/team";
 import {allUsers} from '@/api/system/user.js'
+
 
 const { proxy } = getCurrentInstance();
 
@@ -196,6 +237,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref("");
+const teamTitle = ref("团队成员列表");
 
 const data = reactive({
   form: {},
@@ -217,10 +259,36 @@ const data = reactive({
 const users = ref([])
 
 const { queryParams, form, rules } = toRefs(data);
+const teamOpen = ref(false);
+const teamAddOpen = ref(false);
+const teamMembers = reactive({
+  queryParams: {
+    pageNum: 1,
+    pageSize: 10,
+    projectId: null
+  },
+  teamUsers:[],
+  teamForm: {
+    projectId: null,
+    userIds: []
+  },
+  total: 0
+});
+const {teamForm,teamUsers} = toRefs(teamMembers)
+const usersNotInProject = ref([]);
 
 function fetchUser(){
   allUsers().then(response => {
     users.value = response.data;
+  })
+}
+
+//查询不在项目的用户
+function fetchUserNotInProject(){
+  const _project_id = teamMembers.value.queryParams.projectId;
+  listNotInProject({projectId: _project_id}).then(response => {
+    usersNotInProject.value = response.rows;
+    teamMembers.value.total = response.total;
   })
 }
 
@@ -281,7 +349,7 @@ function handleSelectionChange(selection) {
 /** 新增按钮操作 */
 function handleAdd() {
   reset();
-  fetchUser()
+  fetchUser();
   open.value = true;
   title.value = "添加项目";
 }
@@ -296,6 +364,64 @@ function handleUpdate(row) {
     open.value = true;
     title.value = "修改项目";
   });
+}
+
+// 打开添加团队成员抽屉
+function openAddTeamNumbers(){
+  teamAddOpen.value = true;
+  teamForm.value.userIds=[];
+  teamForm.value.projectId = teamMembers.value.queryParams.projectId;
+  fetchUserNotInProject();
+}
+
+function restTeamQuery(){
+  teamMembers.value = {
+    queryParams: {
+      pageNum: 1,
+      pageSize: 10,
+      projectId: null
+    },
+    teamForm: {
+      projectId: null,
+      userIds: []
+    }
+  }
+  proxy.resetForm("teamAddRef");
+}
+
+/**
+ * 查询项目团队成员
+ * @param row
+ */
+function handleManageTeam(row) {
+  restTeamQuery();
+  loading.value = true;
+  teamMembers.value.queryParams.projectId = row.id;
+  updateTeamView();
+}
+
+/**
+ * 更新项目团队列表视图
+ */
+function updateTeamView(){
+  listTeam(teamMembers.value.queryParams).then(response => {
+    teamMembers.value.total = response.total;
+    teamUsers.value = response.rows;
+    teamOpen.value = true;
+
+    loading.value = false;
+  });
+}
+
+function handleDeleteTeam(row){
+  const _ids = row.id || ids.value;
+  const _userName = row.userName;
+  proxy.$modal.confirm('是否确认删除项目成员"' + _userName ).then(function() {
+    return delTeam(_ids);
+  }).then(() => {
+    updateTeamView();
+    proxy.$modal.msgSuccess("删除成功");
+  }).catch(() => {});
 }
 
 /** 提交按钮 */
@@ -319,6 +445,18 @@ function submitForm() {
   });
 }
 
+/**
+ * 提交团队成员
+ */
+function submitTeamForm(){
+  addTeams(teamForm.value).then(response => {
+    proxy.$modal.msgSuccess("添加成功");
+    teamAddOpen.value = false;
+    fetchUserNotInProject();
+    updateTeamView();
+  })
+}
+
 /** 删除按钮操作 */
 function handleDelete(row) {
   const _ids = row.id || ids.value;
@@ -332,7 +470,7 @@ function handleDelete(row) {
 
 /** 导出按钮操作 */
 function handleExport() {
-  proxy.download('systemManage/project/export', {
+  proxy.download('scheduling/project/export', {
     ...queryParams.value
   }, `project_${new Date().getTime()}.xlsx`)
 }

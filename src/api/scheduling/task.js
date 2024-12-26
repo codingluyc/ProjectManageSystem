@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询任务列表
 export function listTask(query) {
   return request({
-    url: '/systemManage/task/list',
+    url: '/scheduling/task/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listTask(query) {
 // 查询任务列表
 export function allTask(query) {
   return request({
-    url: '/systemManage/task/allTask',
+    url: '/scheduling/task/allTask',
     method: 'get',
     params: query
   })
@@ -20,7 +20,7 @@ export function allTask(query) {
 // 查询任务详细
 export function getTask(id) {
   return request({
-    url: '/systemManage/task/' + id,
+    url: '/scheduling/task/' + id,
     method: 'get'
   })
 }
@@ -28,7 +28,7 @@ export function getTask(id) {
 // 新增任务
 export function addTask(data) {
   return request({
-    url: '/systemManage/task',
+    url: '/scheduling/task',
     method: 'post',
     data: data
   })
@@ -37,7 +37,7 @@ export function addTask(data) {
 // 修改任务
 export function updateTask(data) {
   return request({
-    url: '/systemManage/task',
+    url: '/scheduling/task',
     method: 'put',
     data: data
   })
@@ -46,7 +46,7 @@ export function updateTask(data) {
 // 删除任务
 export function delTask(id) {
   return request({
-    url: '/systemManage/task/' + id,
+    url: '/scheduling/task/' + id,
     method: 'delete'
   })
 }

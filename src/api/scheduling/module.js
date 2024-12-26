@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询模块列表
 export function listModule(query) {
   return request({
-    url: '/systemManage/module/list',
+    url: '/scheduling/module/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listModule(query) {
 // 查询模块列表
 export function allModule(query) {
   return request({
-    url: '/systemManage/module/allModule',
+    url: '/scheduling/module/allModule',
     method: 'get',
     params: query
   })
@@ -21,7 +21,7 @@ export function allModule(query) {
 // 查询模块详细
 export function getModule(id) {
   return request({
-    url: '/systemManage/module/' + id,
+    url: '/scheduling/module/' + id,
     method: 'get'
   })
 }
@@ -29,7 +29,7 @@ export function getModule(id) {
 // 新增模块
 export function addModule(data) {
   return request({
-    url: '/systemManage/module',
+    url: '/scheduling/module',
     method: 'post',
     data: data
   })
@@ -38,7 +38,7 @@ export function addModule(data) {
 // 修改模块
 export function updateModule(data) {
   return request({
-    url: '/systemManage/module',
+    url: '/scheduling/module',
     method: 'put',
     data: data
   })
@@ -47,7 +47,7 @@ export function updateModule(data) {
 // 删除模块
 export function delModule(id) {
   return request({
-    url: '/systemManage/module/' + id,
+    url: '/scheduling/module/' + id,
     method: 'delete'
   })
 }

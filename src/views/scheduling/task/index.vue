@@ -87,7 +87,7 @@
             plain
             icon="Plus"
             @click="handleAdd"
-            v-hasPermi="['systemManage:task:add']"
+            v-hasPermi="['scheduling:task:add']"
         >新增
         </el-button>
       </el-col>
@@ -98,7 +98,7 @@
             icon="Edit"
             :disabled="single"
             @click="handleUpdate"
-            v-hasPermi="['systemManage:task:edit']"
+            v-hasPermi="['scheduling:task:edit']"
         >修改
         </el-button>
       </el-col>
@@ -109,7 +109,7 @@
             icon="Delete"
             :disabled="multiple"
             @click="handleDelete"
-            v-hasPermi="['systemManage:task:remove']"
+            v-hasPermi="['scheduling:task:remove']"
         >删除
         </el-button>
       </el-col>
@@ -119,7 +119,7 @@
             plain
             icon="Download"
             @click="handleExport"
-            v-hasPermi="['systemManage:task:export']"
+            v-hasPermi="['scheduling:task:export']"
         >导出
         </el-button>
       </el-col>
@@ -152,10 +152,10 @@
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)"
-                     v-hasPermi="['systemManage:task:edit']">修改
+                     v-hasPermi="['scheduling:task:edit']">修改
           </el-button>
           <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)"
-                     v-hasPermi="['systemManage:task:remove']">删除
+                     v-hasPermi="['scheduling:task:remove']">删除
           </el-button>
         </template>
       </el-table-column>
@@ -253,9 +253,9 @@
 </template>
 
 <script setup name="Task">
-import {listTask, getTask, delTask, addTask, updateTask} from "@/api/systemManage/task";
-import {allProject} from "@/api/systemManage/project";
-import {allModule} from "@/api/systemManage/module";
+import {listTask, getTask, delTask, addTask, updateTask} from "@/api/scheduling/task";
+import {allProject} from "@/api/scheduling/project";
+import {allModule} from "@/api/scheduling/module";
 import DictTag from "@/components/DictTag/index.vue";
 
 const {proxy} = getCurrentInstance();

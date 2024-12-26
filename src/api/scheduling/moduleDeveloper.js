@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询模块开发者列表
 export function listModuleDeveloper(query) {
   return request({
-    url: '/systemManage/moduleDeveloper/list',
+    url: '/scheduling/moduleDeveloper/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listModuleDeveloper(query) {
 // 查询模块开发者详细
 export function getModuleDeveloper(id) {
   return request({
-    url: '/systemManage/moduleDeveloper/' + id,
+    url: '/scheduling/moduleDeveloper/' + id,
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export function getModuleDeveloper(id) {
 // 新增模块开发者
 export function addModuleDeveloper(data) {
   return request({
-    url: '/systemManage/moduleDeveloper',
+    url: '/scheduling/moduleDeveloper',
     method: 'post',
     data: data
   })
@@ -29,7 +29,7 @@ export function addModuleDeveloper(data) {
 // 修改模块开发者
 export function updateModuleDeveloper(data) {
   return request({
-    url: '/systemManage/moduleDeveloper',
+    url: '/scheduling/moduleDeveloper',
     method: 'put',
     data: data
   })
@@ -38,7 +38,7 @@ export function updateModuleDeveloper(data) {
 // 删除模块开发者
 export function delModuleDeveloper(id) {
   return request({
-    url: '/systemManage/moduleDeveloper/' + id,
+    url: '/scheduling/moduleDeveloper/' + id,
     method: 'delete'
   })
 }
